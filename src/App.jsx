@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashbord from "./components/layouts/Dashboard/dashboard";
-import Products from "./pages/dashboard/dashboard";
+import Products from "./pages/products/products";
 import Login from "./pages/login/Login";
 import Add from "./pages/add/Add";
 import Edit from "./pages/edit/Edit";
