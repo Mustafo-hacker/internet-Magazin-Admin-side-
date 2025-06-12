@@ -85,12 +85,13 @@ const Products = () => {
   }
 
   return (
-    <Box className="p-4 min-h-screen">
-      <Box className="flex justify-between items-center mb-4 p-4 bg-white shadow-md rounded-lg  dark:bg-gray-800">
+    <Box className="p-4 min-h-screen bg-gray-100 dark:bg-gray-900">
+      {/* Header */}
+      <Box className="flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between items-start sm:items-center mb-4 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
         <Typography variant="h5" className="font-semibold text-gray-800 dark:text-white">
           Product Management
         </Typography>
-        <Typography variant="body1" className="text-gray-600  dark:text-white">
+        <Typography variant="body1" className="text-gray-600 dark:text-gray-300">
           Total Products: {data?.length || 0}
         </Typography>
         <Link to="/add">
@@ -100,14 +101,15 @@ const Products = () => {
         </Link>
       </Box>
 
-      <TableContainer component={Paper} sx={{ mt: 2, boxShadow: 3, borderRadius: 2 }}>
+      {/* Table */}
+      <TableContainer component={Paper} className="overflow-x-auto" sx={{ mt: 2, boxShadow: 3, borderRadius: 2 }}>
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#1f2937" }}>
               <TableCell sx={{ fontWeight: "bold", color: "white" }}>Image</TableCell>
               <TableCell sx={{ fontWeight: "bold", color: "white" }}>Name</TableCell>
               <TableCell sx={{ fontWeight: "bold", color: "white" }}>Price</TableCell>
-              <TableCell sx={{ fontWeight: "bold", color: "white" }}>Discount Price</TableCell>
+              <TableCell sx={{ fontWeight: "bold", color: "white" }}>Discount</TableCell>
               <TableCell sx={{ fontWeight: "bold", color: "white" }}>Stock</TableCell>
               <TableCell sx={{ fontWeight: "bold", color: "white" }}>Actions</TableCell>
             </TableRow>
@@ -118,32 +120,38 @@ const Products = () => {
                 <TableCell>
                   <img
                     src={`https://store-api.softclub.tj/images/${el.image}`}
-                    className="w-16 h-16 rounded-lg shadow-md"
+                    className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg shadow-md object-cover"
                     alt=""
                   />
                 </TableCell>
-                <TableCell className="font-medium text-gray-700">{el.productName}</TableCell>
-                <TableCell className="text-gray-800">${el.price}</TableCell>
-                <TableCell className="text-gray-800">${el.discountPrice}</TableCell>
+                <TableCell className="font-medium text-sm sm:text-base text-gray-700">{el.productName}</TableCell>
+                <TableCell className="text-gray-800 text-sm sm:text-base">${el.price}</TableCell>
+                <TableCell className="text-gray-800 text-sm sm:text-base">${el.discountPrice}</TableCell>
                 <TableCell>
                   <span
-                    className={`px-2 py-1 rounded text-white text-sm ${el.quantity > 0 ? "bg-green-500" : "bg-gray-500"}`}
+                    className={`px-2 py-1 rounded text-white text-xs sm:text-sm ${
+                      el.quantity > 0 ? "bg-green-500" : "bg-gray-500"
+                    }`}
                   >
                     {el.quantity > 0 ? `${el.quantity} in stock` : "Out of stock"}
                   </span>
                 </TableCell>
                 <TableCell>
-                  <Link to={`/edit/${el.id}`}>
-                    <EditOutlinedIcon sx={{ cursor: "pointer", color: "#3b82f6" }} />
-                  </Link>
-                  <DeleteOutlineOutlinedIcon
-                    onClick={() => el.id && dispatch(del(el.id))}
-                    sx={{ ml: 1, color: "red", cursor: "pointer" }}
-                  />
-                  <ImageIcon
-                    onClick={() => handleOpenModal(el.image, el.id)}
-                    sx={{ ml: 1, color: "blue", cursor: "pointer" }}
-                  />
+                  <Box className="flex items-center gap-1 sm:gap-2">
+                    <Link to={`/edit/${el.id}`}>
+                      <EditOutlinedIcon fontSize="small" sx={{ color: "#3b82f6", cursor: "pointer" }} />
+                    </Link>
+                    <DeleteOutlineOutlinedIcon
+                      onClick={() => el.id && dispatch(del(el.id))}
+                      fontSize="small"
+                      sx={{ color: "red", cursor: "pointer" }}
+                    />
+                    <ImageIcon
+                      onClick={() => handleOpenModal(el.image, el.id)}
+                      fontSize="small"
+                      sx={{ color: "blue", cursor: "pointer" }}
+                    />
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
@@ -151,10 +159,12 @@ const Products = () => {
         </Table>
       </TableContainer>
 
+      {/* Modal */}
       <Modal open={openModal} onClose={handleCloseModal}>
-        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-0 rounded-lg shadow-xl w-[450px] overflow-hidden">
-          <Box className="flex justify-between items-center p-4 border-b bg-gray-50">
-            <Typography variant="h6" className="font-medium text-gray-800">
+        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 w-full max-w-[450px] mx-4 rounded-lg shadow-xl">
+          {/* Modal Header */}
+          <Box className="flex justify-between items-center p-4 border-b bg-gray-50 dark:bg-gray-700">
+            <Typography variant="h6" className="font-medium text-gray-800 dark:text-white">
               Edit Product Image
             </Typography>
             <IconButton onClick={handleCloseModal} className="hover:bg-gray-200 transition-colors" size="small">
@@ -162,12 +172,10 @@ const Products = () => {
             </IconButton>
           </Box>
 
+          {/* Image Preview + Upload */}
           <Box className="p-4">
             {selectedImage && (
-              <Box
-                className="relative mb-4 bg-gray-100 rounded-lg overflow-hidden flex justify-center items-center"
-                sx={{ height: "220px" }}
-              >
+              <Box className="relative mb-4 bg-gray-100 dark:bg-gray-700 rounded-lg flex justify-center items-center h-[220px]">
                 <img
                   src={`https://store-api.softclub.tj/images/${selectedImage}`}
                   className="max-w-full max-h-full object-contain"
@@ -177,15 +185,15 @@ const Products = () => {
             )}
 
             <Box className="mb-4">
-              <Typography variant="subtitle2" className="mb-2 text-gray-700">
+              <Typography variant="subtitle2" className="mb-2 text-gray-700 dark:text-gray-200">
                 Upload new image:
               </Typography>
-              <Box className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:bg-gray-50 transition-colors">
+              <Box className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 text-center hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
                 <input type="file" id="image-upload" className="hidden" onChange={handleFileChange} accept="image/*" />
                 <label htmlFor="image-upload" className="cursor-pointer">
                   <Box className="flex flex-col items-center">
                     <AddIcon className="text-gray-500 mb-2" />
-                    <Typography variant="body2" className="text-gray-600">
+                    <Typography variant="body2" className="text-gray-600 dark:text-gray-300">
                       Click to browse or drag and drop
                     </Typography>
                   </Box>
@@ -199,8 +207,9 @@ const Products = () => {
             </Box>
           </Box>
 
-          <Box className="flex justify-end gap-2 p-4 border-t bg-gray-50">
-            <Button variant="outlined" onClick={handleCloseModal} className="hover:bg-gray-100" disabled={isLoading}>
+          {/* Modal Footer */}
+          <Box className="flex justify-end gap-2 p-4 border-t bg-gray-50 dark:bg-gray-700">
+            <Button variant="outlined" onClick={handleCloseModal} disabled={isLoading}>
               Cancel
             </Button>
             <Button
@@ -229,4 +238,3 @@ const Products = () => {
 }
 
 export default Products
-
